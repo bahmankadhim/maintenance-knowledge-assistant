@@ -7,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+
 builder.Services.AddSingleton<IEquipmentRepository, InMemoryEquipmentRepository>();
+builder.Services.AddSingleton<IWorkOrderRepository, InMemoryWorkOrderRepository>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

@@ -15,5 +15,5 @@ public static class EquipmentMappings
         Location = r.Location,
         Status = r.Status,
         InstalledOn = r.InstalledOn
-    }
+    };
 }

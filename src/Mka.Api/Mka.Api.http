@@ -1,10 +1,12 @@
 @Mka.Api_HostAddress = http://localhost:5054
 
 ###
+# Id will not used by api becaouse i use dto there.
 POST {{Mka.Api_HostAddress}}/api/equipment
 Content-Type: application/json
 
 {
+  "id": 999,
   "tag": "V-301",
   "name": "Production Separator",
   "type": "Vessel",
@@ -15,4 +17,23 @@ Content-Type: application/json
 
 ###
 GET {{Mka.Api_HostAddress}}/api/equipment
+
+###
+GET {{Mka.Api_HostAddress}}/api/workorder?equipmentId=1
+
+###
+GET {{Mka.Api_HostAddress}}/api/workorder/1
+
+###
+POST {{Mka.Api_HostAddress}}/api/workorder
+Content-Type: application/json
+
+{
+  "Title": "Generator Maintenance",
+  "Description": "Generator Change Oil & Filters",
+  "EquipmentId": "22",
+  "AssignedTo": "Ali Hamid"
+}
+
+
 
