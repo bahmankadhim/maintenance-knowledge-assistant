@@ -31,7 +31,7 @@ Content-Type: application/json
 {
   "Title": "Generator Maintenance",
   "Description": "Generator Change Oil & Filters",
-  "EquipmentId": "22",
+  "EquipmentId": "1",
   "AssignedTo": "Ali Hamid"
 }
 

@@ -4,7 +4,7 @@ namespace Mka.Api.Repositories;
 
 public interface IEquipmentRepository
 {
-    IReadOnlyList<Equipment> GetAll();
-    Equipment? GetById(int id);
-    Equipment Add(Equipment equipment);
+    Task<IReadOnlyList<Equipment>> GetAllAsync(CancellationToken ct = default);
+    Task<Equipment?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<Equipment> AddAsync(Equipment equipment, CancellationToken ct = default);
 }

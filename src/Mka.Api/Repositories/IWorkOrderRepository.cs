@@ -4,7 +4,7 @@ namespace Mka.Api.Repositories;
 
 public interface IWorkOrderRepository
 {
-    IReadOnlyList<WorkOrder> GetAll();
-    WorkOrder? GetById(int id);
-    WorkOrder Add(WorkOrder workOrder);
+    Task<IReadOnlyList<WorkOrder>> GetAllAsync(int? equipmentId = null, CancellationToken ct = default);
+    Task<WorkOrder?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<WorkOrder> AddAsync(WorkOrder workOrder, CancellationToken ct = default);
 }

@@ -10,31 +10,29 @@ namespace Mka.Api.Controllers;
 public class WorkOrderController(IWorkOrderRepository workOrderRepository, IEquipmentRepository equipmentRepository) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IEnumerable<WorkOrderResponse>> GetAll([FromQuery] int? equipmentId)
+    public async Task<ActionResult<IEnumerable<WorkOrderResponse>>> GetAll(
+    [FromQuery] int? equipmentId, CancellationToken ct)
     {
-        var items = workOrderRepository.GetAll().AsEnumerable();
-        if (equipmentId is not null)
-            items = items.Where(w => w.EquipmentId == equipmentId);
+        var items = await workOrderRepository.GetAllAsync(equipmentId, ct);
         return Ok(items.Select(w => w.ToResponse()));
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<WorkOrderResponse> GetById(int id)
+    public async Task<ActionResult<WorkOrderResponse>> GetById(int id, CancellationToken ct)
     {
-        var workOrder = workOrderRepository.GetById(id);
-        if(workOrder is null) return NotFound();
+        var workOrder = await workOrderRepository.GetByIdAsync(id, ct);
+        if (workOrder is null) return NotFound();
         return Ok(workOrder.ToResponse());
     }
 
-
     [HttpPost]
-    public ActionResult<WorkOrderResponse> Create(CreateWorkOrderRequest workOrder)
+    public async Task<ActionResult<WorkOrderResponse>> Create(
+        CreateWorkOrderRequest request, CancellationToken ct)
     {
-        var exist = equipmentRepository.GetById(workOrder.EquipmentId);
-        if(exist is null) return BadRequest("Equipment not found");
+        var equipment = await equipmentRepository.GetByIdAsync(request.EquipmentId, ct);
+        if (equipment is null) return BadRequest("Equipment not found");
 
-        var created = workOrderRepository.Add(workOrder.ToEntity());
-        var response = created.ToResponse();
-        return CreatedAtAction(nameof(GetById), new {id = created.Id}, response);
+        var created = await workOrderRepository.AddAsync(request.ToEntity(), ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created.ToResponse());
     }
 }
