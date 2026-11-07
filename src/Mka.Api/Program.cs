@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Mka.Api.Data;
+using Mka.Api.Infrastructure;
 using Mka.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +15,15 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IEquipmentRepository, EfEquipmentRepository>();
 builder.Services.AddScoped<IWorkOrderRepository, EfWorkOrderRepository>();
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
