@@ -47,6 +47,14 @@ builder.Services.AddSingleton<TokenService>();
 
 var app = builder.Build();
 
+// Apply pending EF Core migrations at startup (enabled only where configured, e.g. Azure dev)
+if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
