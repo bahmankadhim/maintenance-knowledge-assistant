@@ -20,6 +20,14 @@ public class EquipmentApiTests(MkaApiFactory factory) : IClassFixture<MkaApiFact
     }
 
     [Fact]
+    public async Task Login_DemoLoginDisabled_ReturnsNotFound()
+    {
+        var client = factory.WithWebHostBuilder(b => b.UseSetting("Auth:EnableDemoLogin", "false")).CreateClient();
+        var response = await client.PostAsJsonAsync("/api/auth/login", new { username = "tech1", password = "Tech#1234" });
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Login_WithWrongPassword_Returns401()
     {
         var client = factory.CreateClient();
