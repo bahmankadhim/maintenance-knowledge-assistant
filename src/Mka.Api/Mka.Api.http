@@ -34,29 +34,34 @@ Content-Type: application/json
 { "tag": "V-302", "name": "Test Separator", "type": "Vessel",
   "location": "CPF", "status": "Operational", "installedOn": "2022-01-10" }
 
-###
+### List equipment
 GET {{hostAddress}}/api/equipment
-Authorization: Bearer {{token}}
+Authorization: Bearer {{techToken}}
 
-###
+### Work orders for one equipment
 GET {{hostAddress}}/api/workorder?equipmentId=1
+Authorization: Bearer {{techToken}}
 
-###
+### One work order
 GET {{hostAddress}}/api/workorder/1
+Authorization: Bearer {{techToken}}
 
-###
+### Create work order → expect 201
 POST {{hostAddress}}/api/workorder
+Authorization: Bearer {{techToken}}
 Content-Type: application/json
 
 {
-  "Title": "Generator Maintenance",
-  "Description": "Generator Change Oil & Filters",
-  "EquipmentId": "1",
-  "AssignedTo": "Ali Hamid"
+  "title": "Generator Maintenance",
+  "description": "Generator Change Oil & Filters",
+  "equipmentId": 1,
+  "priority": "Medium",
+  "assignedTo": "Ali Hamid"
 }
 
-###
+### Invalid work order → expect 400 with validation errors
 POST {{hostAddress}}/api/workorder
+Authorization: Bearer {{techToken}}
 Content-Type: application/json
 
 {
@@ -65,9 +70,3 @@ Content-Type: application/json
   "equipmentId": 0,
   "priority": 99
 }
-
-
-
-
-
-
