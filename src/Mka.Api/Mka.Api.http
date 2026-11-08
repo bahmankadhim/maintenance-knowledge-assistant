@@ -1,22 +1,42 @@
 @hostAddress = http://localhost:5054
 
-###
-# Id will not used by api becaouse i use dto there.
-POST {{hostAddress}}/api/equipment
+### Login as technician
+# @name techLogin
+POST {{hostAddress}}/api/auth/login
 Content-Type: application/json
 
-{
-  "id": 999,
-  "tag": "P-101",
-  "name": "Production Separator",
-  "type": "Vessel",
-  "location": "CPF",
-  "status": 0,
-  "installedOn": "2021-08-15"
-}
+{ "username": "tech1", "password": "Tech#1234" }
+
+### Login as supervisor
+# @name superLogin
+POST {{hostAddress}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "super1", "password": "Super#1234" }
+
+###
+@techToken = {{techLogin.response.body.accessToken}}
+@superToken = {{superLogin.response.body.accessToken}}
+
+### Technician creates equipment → expect 403
+POST {{hostAddress}}/api/equipment
+Authorization: Bearer {{techToken}}
+Content-Type: application/json
+
+{ "tag": "V-301", "name": "Production Separator", "type": "Vessel",
+  "location": "CPF", "status": "Operational", "installedOn": "2021-08-15" }
+
+### Supervisor creates equipment → expect 201
+POST {{hostAddress}}/api/equipment
+Authorization: Bearer {{superToken}}
+Content-Type: application/json
+
+{ "tag": "V-302", "name": "Test Separator", "type": "Vessel",
+  "location": "CPF", "status": "Operational", "installedOn": "2022-01-10" }
 
 ###
 GET {{hostAddress}}/api/equipment
+Authorization: Bearer {{token}}
 
 ###
 GET {{hostAddress}}/api/workorder?equipmentId=1
@@ -45,6 +65,9 @@ Content-Type: application/json
   "equipmentId": 0,
   "priority": 99
 }
+
+
+
 
 
 

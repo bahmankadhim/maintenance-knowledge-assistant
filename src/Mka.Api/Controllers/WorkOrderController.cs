@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Mka.Api.Models;
 using Mka.Api.Repositories;
 using Mka.Api.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mka.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class WorkOrderController(IWorkOrderRepository workOrderRepository, IEquipmentRepository equipmentRepository) : ControllerBase
 {

@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Mka.Api.Models;
 using Mka.Api.Repositories;
 using Mka.Api.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mka.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class EquipmentController(IEquipmentRepository repository) : ControllerBase
 {
@@ -25,6 +27,7 @@ public class EquipmentController(IEquipmentRepository repository) : ControllerBa
     }
 
     [HttpPost]
+    [Authorize(Roles = "Supervisor")]
     public async Task<ActionResult<EquipmentResponse>> Create(CreateEquipmentRequest equipment, CancellationToken ct)
     {
         var created = await repository.AddAsync(equipment.ToEntity(), ct);
