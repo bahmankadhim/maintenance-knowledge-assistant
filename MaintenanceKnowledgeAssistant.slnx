@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Mka.Api/Mka.Api.csproj" />
+    <Project Path="src/Mka.Functions/Mka.Functions.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Mka.Api.Tests/Mka.Api.Tests.csproj" />

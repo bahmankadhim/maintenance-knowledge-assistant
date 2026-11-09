@@ -481,5 +481,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+
 # Local requests against the live Azure API (contain real passwords)
 live.http
+
+# Azure Functions local settings (may contain connection strings and keys)
+local.settings.json
