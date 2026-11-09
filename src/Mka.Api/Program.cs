@@ -1,5 +1,8 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Azure.Core;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +21,17 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IEquipmentRepository, EfEquipmentRepository>();
 builder.Services.AddScoped<IWorkOrderRepository, EfWorkOrderRepository>();
+
+TokenCredential credential = builder.Environment.IsDevelopment()
+    ? new AzureCliCredential()                                       // laptop: your az login
+    : new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned); // Azure: the web app's identity
+
+builder.Services.AddSingleton(_ =>
+{
+    var storage = builder.Configuration.GetSection("Storage");
+    var service = new BlobServiceClient(new Uri(storage["BlobEndpoint"]!), credential);
+    return service.GetBlobContainerClient(storage["Container"]);
+});
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(
     builder.Configuration.GetConnectionString("Default"),

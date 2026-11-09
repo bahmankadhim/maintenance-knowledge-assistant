@@ -70,3 +70,32 @@ Content-Type: application/json
   "equipmentId": 0,
   "priority": 99
 }
+
+
+### Supervisor uploads a document → expect 201
+POST {{hostAddress}}/api/document
+Authorization: Bearer {{superToken}}
+Content-Type: multipart/form-data; boundary=b
+
+--b
+Content-Disposition: form-data; name="file"; filename="pump-101-manual.txt"
+Content-Type: text/plain
+
+Pump P-101: check seal every 500 hours.
+--b--
+
+### Technician uploads → expect 403
+POST {{hostAddress}}/api/document
+Authorization: Bearer {{techToken}}
+Content-Type: multipart/form-data; boundary=b
+
+--b
+Content-Disposition: form-data; name="file"; filename="x.txt"
+Content-Type: text/plain
+
+test
+--b--
+
+### List documents → expect 200
+GET {{hostAddress}}/api/document
+Authorization: Bearer {{techToken}}
