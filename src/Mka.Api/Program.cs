@@ -10,6 +10,8 @@ using Mka.Api.Auth;
 using Mka.Api.Data;
 using Mka.Api.Infrastructure;
 using Mka.Api.Repositories;
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,16 @@ builder.Services.AddSingleton(_ =>
     var storage = builder.Configuration.GetSection("Storage");
     var service = new BlobServiceClient(new Uri(storage["BlobEndpoint"]!), credential);
     return service.GetBlobContainerClient(storage["Container"]);
+});
+
+// One ChatClient for the whole app: it is thread-safe, reuses HTTP connections
+// and caches the Entra token, so a singletone is the recommended lifetime.
+builder.Services.AddSingleton(_ =>
+{
+    var ai = builder.Configuration.GetSection("AzureOpenAI");
+    var client = new AzureOpenAIClient(new Uri(ai["Endpoint"]!), credential); // no key
+
+    return client.GetChatClient(ai["ChatDeployment"]); //deployment name, not model name
 });
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(
