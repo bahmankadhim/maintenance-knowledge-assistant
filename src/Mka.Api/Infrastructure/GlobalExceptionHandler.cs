@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
+using System.ClientModel;
+
 namespace Mka.Api.Infrastructure;
 
 
@@ -17,6 +19,12 @@ public class GlobalExceptionHandler(
         {
             DbUpdateException { InnerException: SqlException { Number: 2601 or 2627 } } => (
                 StatusCodes.Status409Conflict, "A record with the same unique value already exist!"
+            ),
+            ClientResultException { Status: 429 } => (
+                StatusCodes.Status429TooManyRequests, "The AI service is busy. Try again in a moment."
+            ),
+            ClientResultException => (
+                StatusCodes.Status502BadGateway, "The AI service returned an error."
             ),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occured.")
         };
