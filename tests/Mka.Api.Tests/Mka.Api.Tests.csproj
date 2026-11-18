@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mka.Api\Mka.Api.csproj" />
+    <ProjectReference Include="..\..\src\Mka.Rag\Mka.Rag.csproj" />
   </ItemGroup>
 
 </Project>
